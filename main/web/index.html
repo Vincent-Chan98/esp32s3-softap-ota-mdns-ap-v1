@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<!-- <meta http-equiv="refresh" content="10"> -->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+			h1 {text-align: center;}
+			h2, h3 {color: darkblue; font-family: Verdana;}
+			.myPage {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				background-position: center;
+				background-repeat: no-repeat;
+				background-size: cover;
+				background-image: url(../eita.jpg);
+				filter: blur(10px);
+				z-index: -10;
+			}
+			.myOta {
+				text-align: center;
+				margin-top: 20px;			
+			}
+			.myProgress {
+				text-align: center;
+				margin-top: 20px;
+				border: 5px outset red;
+				background-color: white;
+			}
+			.mySetting {
+				margin-top: 50px;	
+				text-align: center;
+				float: right;
+				width: 50%;
+			}
+			.myColor {
+				text-align: center;
+			}
+			/* .video {
+				display: block;
+				float: left;
+				width: 50%;
+				margin-left: auto;
+				margin-right: auto;
+				padding: 50px 0;
+			} */
+			.opnProgress, .clsProgress, .rbtProgress {
+				padding: 10px 0;
+				float: right right;
+				width: 30%;
+				text-align: center;
+				/* border: 5px outset cyan; */
+				background-color: white;
+				margin: auto;
+			}
+			/* .btn-row {
+				margin-top: 50px;	
+				padding: 10px;
+				display: flex;
+				flex-direction: row; */
+				/* justify-content: flex-start; */
+				/* justify-content: space-evenly;
+			}
+			a.bulb button {
+				background-color: white;
+			}
+			a.bulb button:hover {
+				background-color: yellow;
+			}
+			a.fan button {
+				background-color: white;
+			}
+			a.fan button:hover {
+				background-color: lightskyblue;
+			}
+			a.bell button {
+				background-color: white;
+			}
+			a.bell button:hover {
+				background-color: crimson;
+			} */
+		</style>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title>EITA RND</title>
+		<script>
+			function startUpload() {
+				var otafile = document.getElementById("otafile").files;
+
+				if (otafile.length == 0) {
+					alert("No file selected!");
+				} else {
+					document.getElementById("otafile").disabled = true;
+					document.getElementById("upload").disabled = true;
+
+					var file = otafile[0];
+					var xhr = new XMLHttpRequest();
+					xhr.onreadystatechange = function() {
+						if (xhr.readyState == 4) {
+							if (xhr.status == 200) {
+								document.open();
+								document.write(xhr.responseText);
+								document.close();
+							} else if (xhr.status == 0) {
+								alert("Server closed the connection abruptly!");
+								location.reload()
+							} else {
+								alert(xhr.status + " Error!\n" + xhr.responseText);
+								location.reload()
+							}
+						}
+					};
+					xhr.upload.onprogress = function (e) {
+						var progress = document.getElementById("progress");
+						progress.textContent = "Progress: " + (e.loaded / e.total * 100).toFixed(0) + "%";
+					};
+					xhr.open("POST", "/update", true);
+					xhr.send(file);
+				}
+			}
+			function Update_open() {
+				var go = document.getElementById("Go").value;
+				var ro = document.getElementById("Ro").value;
+				var bo = document.getElementById("Bo").value;
+				var to = document.getElementById("To").value;
+				return (go+"&"+ro+"&"+bo+"&"+to);
+			}
+			function Update_close() {
+				var gc = document.getElementById("Gc").value;
+				var rc = document.getElementById("Rc").value;
+				var bc = document.getElementById("Bc").value;
+				var tc = document.getElementById("Tc").value;
+				return (gc+"&"+rc+"&"+bc+"&"+tc);
+			}
+			function seeme() {
+				var showdata = new XMLHttpRequest();
+				showdata.onreadystatechange = function() {
+					if (showdata.readyState == 4 && this.status == 200) {
+						document.getElementById("showdata").innerHTML = this.responseText;
+					}
+				};
+				showdata.open("GET", "/data/show", true);
+				showdata.send();
+			}
+			seeme();
+			setInterval(seeme, 8000);
+			function ledopn() {
+				var up_opn = new XMLHttpRequest();
+				up_opn.onreadystatechange = function() {
+					if (up_opn.readyState == 4 && this.status == 200) {
+						document.getElementById("opnprogress").innerHTML = this.responseText;
+					}
+				};
+				up_opn.open("GET", "/open/update", true);
+				up_opn.send();
+			}
+			ledopn();
+			setInterval(ledopn, 1000);
+			function ledcls() {
+				var up_cls = new XMLHttpRequest();
+				up_cls.onreadystatechange = function() {
+					if (up_cls.readyState == 4 && this.status == 200) {
+						document.getElementById("clsprogress").innerHTML = this.responseText;
+					}
+				};
+				up_cls.open("GET", "/close/update", true);
+				up_cls.send();
+			}
+			ledcls();
+			setInterval(ledcls, 1000);
+			function reboot() {
+				var esp_rbt = new XMLHttpRequest();
+				esp_rbt.onreadystatechange = function() {
+					if (esp_rbt.readyState == 4 && this.status == 200) {
+						document.getElementById("rbtprogress").innerHTML = this.responseText;
+					}
+				};
+				esp_rbt.open("GET", "/esp/reboot", true);
+				esp_rbt.send();
+			}
+			reboot();
+			setInterval(reboot, 1000);
+		</script>
+		<script src="https://kit.fontawesome.com/68caaa6cb1.js" crossorigin="anonymous"></script>
+		<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+	</head>
+	<body>
+		<div class="myPage"></div>
+			<h1 style="color: blue;">Advanced Lift Lighting System</h1>
+			<div class="myOta">
+				<label for="otafile">Firmware file:</label>
+				<input type="file" id="otafile" name="otafile" />
+				<button id="upload" type="button" onclick="startUpload()">Upload</button>
+			</div>
+			<div class="myProgress" id="progress"></div>
+			<div class="mySetting">
+				<h2>Present Data</h2>
+				<div id="showdata">
+					<button id="seeme" type="button" onclick="seeme()">Show</button>
+				</div>
+				
+
+				<div class="myColor" id="color">
+					<h2>Setting</h2>
+					<p>Adjust your desired GRB colors & operation time<br>
+						(G-Green, R-Red, B-Blue, T-Time)<br>
+					</p>
+					<div id="GRBopen">
+						<h3>OPEN</h3>
+						<div>
+							<label for="Gopn">GRBT:
+								<input type="text" id="Go" name="inGo" maxlength="2"  value="FF">
+								<input type="text" id="Ro" name="inRo" maxlength="2"  value="FF">
+								<input type="text" id="Bo" name="inBo" maxlength="2"  value="FF">
+								<input type="text" id="To" name="inTo" maxlength="4"  value="50">
+							</label>
+							<a href="http://eitahq-lift3.local/data/open/" onclick="location.href=this.href+'?c_value='+Update_open();return false;">
+								<button id="update_color" type="button" name="Update1">Update</button>
+							</a>		
+						</div>
+					</div>
+					<div class="opnProgress" id="opnprogress">
+						<button id="ledprogress" type="button" onclick="ledopn()">LED Progress</button>
+					</div>
+					<div id="GRBclose">
+						<h3>CLOSE</h3>
+						<div>
+							<label for="Gcls">GRBT:
+								<input type="text" id="Gc" name="inGc" maxlength="2"  value="FF">
+								<input type="text" id="Rc" name="inRc" maxlength="2"  value="FF">
+								<input type="text" id="Bc" name="inBc" maxlength="2"  value="FF">
+								<input type="text" id="Tc" name="inTc" maxlength="4"  value="50">
+							</label>
+							<a href="http://eitahq-lift3.local/data/close/" onclick="location.href=this.href+'?c_value='+Update_close();return false;">
+								<button id="update_color" type="button" name="Update1">Update</button>
+							</a>
+						</div>
+					</div>
+					<div class="clsProgress" id="clsprogress">
+						<button id="ledprogress" type="button" onclick="ledcls()">LED Progress</button>
+					</div>
+				</div>				
+				<div>
+					<a href="http://eitahq-lift3.local/reboot">
+						<br><button id="reboot" type="button" name="reboot">Reboot</button><br>
+					</a>
+				</div>
+				<div class="rbtProgress" id="rbtprogress">
+					<button id="rbt" type="button" onclick="reboot()">Reboot Progress</button>
+				</div>
+				<!-- <div class="btn-row">
+					<a href="http://eitahq-lift3.local/controlled" class="bulb">
+						<button style="font-size: 84px;" class="bulb"><i class="fa-solid fa-lightbulb fa-bounce"></i></button>
+					</a>
+					<a href="http://eitahq-lift3.local/fan" class="fan">
+						<button style="font-size: 84px;"><i class="fa-solid fa-fan fa-spin"></i></button>
+					</a>
+					<a href="http://eitahq-lift3.local/alarm" class="bell">
+						<button style="font-size: 84px;"><i class="fa-solid fa-bell fa-shake"></i></button>
+					</a>
+				</div> -->
+			</div>
+
+			<!-- <div class="video">
+				<center> -->
+					<!-- <br><iframe src="https://www.youtube.com/embed/iXuqN7PSDNA?autoplay=1" height="450" width="600" allow="autoplay"> -->
+					<!-- <br><iframe src="https://www.youtube.com/embed/iXuqN7PSDNA" height="450" width="600">
+					</iframe>
+				</center>
+			</div> -->
+			
+	</body>
+</html>
